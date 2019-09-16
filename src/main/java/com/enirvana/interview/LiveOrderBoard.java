@@ -36,6 +36,7 @@ public class LiveOrderBoard {
         return orderId;
     }
 
+    // logically, order ID is enough for the functionality, but the order equality is checked to minimize malicious attempt
     public void cancelOrder(Integer orderId, Order order) {
         if (orders.remove(orderId, order)) {
             ConcurrentSkipListMap<Double, Double> prices = order.type().equals(BUY) ? buyPrices : sellPrices;
