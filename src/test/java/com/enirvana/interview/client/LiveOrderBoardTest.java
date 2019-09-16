@@ -54,7 +54,7 @@ class LiveOrderBoardTest {
     }
 
     @Test
-    void cancel_one_existing_order() {
+    void cancel_one_existing_order_and_prices_not_available_anymore() {
         Order order = ImmutableOrder.builder().userId("test").quantity(100d).price(310.00).type(OrderType.BUY).build();
         LiveOrderBoard sut = new LiveOrderBoard();
 
@@ -63,6 +63,21 @@ class LiveOrderBoardTest {
 
         Summary actual = sut.getSummary();
         assertThat(actual.buyOrders()).isEmpty();
+        assertThat(actual.sellOrders()).isEmpty();
+    }
+
+    @Test
+    void cancel_one_existing_order() {
+        Order order1 = ImmutableOrder.builder().userId("test").quantity(100d).price(310.00).type(OrderType.BUY).build();
+        Order order2 = ImmutableOrder.builder().userId("test").quantity(100d).price(310.00).type(OrderType.BUY).build();
+        LiveOrderBoard sut = new LiveOrderBoard();
+
+        Integer orderId = sut.registerOrder(order1);
+        sut.registerOrder(order2);
+        sut.cancelOrder(orderId, order1);
+
+        Summary actual = sut.getSummary();
+        assertThat(actual.buyOrders()).containsExactly(ImmutableSummaryEntry.of(100d, 310.00));
         assertThat(actual.sellOrders()).isEmpty();
     }
 

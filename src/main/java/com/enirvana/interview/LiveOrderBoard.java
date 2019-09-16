@@ -39,7 +39,7 @@ public class LiveOrderBoard {
     public void cancelOrder(Integer orderId, Order order) {
         if (orders.remove(orderId, order)) {
             ConcurrentSkipListMap<Double, Double> prices = order.type().equals(BUY) ? buyPrices : sellPrices;
-            prices.computeIfPresent(order.price(), (price, quantity) -> quantity.equals(order.quantity()) ? null : (order.quantity() + quantity));
+            prices.computeIfPresent(order.price(), (price, quantity) -> quantity.equals(order.quantity()) ? null : (quantity - order.quantity()));
         }
     }
 
